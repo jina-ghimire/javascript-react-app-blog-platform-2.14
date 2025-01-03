@@ -26,25 +26,34 @@ function App() {
   return (
     <Router>
       <header>
-        <nav className="nav-container">
-          <div className="nav-left">
-            <Link to="/posts" className="nav-link">Realworld Blog</Link>
-          </div>
-          <div className="nav-right">
-            {!user ? (
-              <>
-                <Link to="/sign-in" className="nav-link">Sign In</Link>
-                <Link to="/sign-up" className="nav-signup">Sign Up</Link>
-              </>
-            ) : (
-              <>
-                <Link to="/profile" className="nav-link">{user.username || "Profile"}</Link>
-                <button onClick={handleLogout} className="nav-button">Log Out</button>
-              </>
-            )}
-          </div>
-        </nav>
-      </header>
+  <nav className="nav-container">
+    <div className="nav-left">
+      <Link to="/posts" className="nav-link">Realworld Blog</Link>
+    </div>
+    <div className="nav-right">
+      {!user ? (
+        <>
+          <Link to="/sign-in" className="nav-link">Sign In</Link>
+          <Link to="/sign-up" className="nav-signup">Sign Up</Link>
+        </>
+      ) : (
+        <>
+          <Link to="/profile" className="nav-link">
+            {user.avatar ? (
+              <img
+                src={user.avatar}
+                alt="User Avatar"
+                className="avatar"
+              />
+            ) : null}
+            {user.username || "Profile"}
+          </Link>
+          <button onClick={handleLogout} className="nav-button">Log Out</button>
+        </>
+      )}
+    </div>
+  </nav>
+</header>
       <Routes>
         <Route path="/posts" element={<PostList />} />
         <Route path="/posts/:id" element={<PostDetail />} />

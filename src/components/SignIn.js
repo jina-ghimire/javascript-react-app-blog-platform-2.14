@@ -30,15 +30,18 @@ const SignIn = ({ setUser }) => {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email address"
             required
           />
         </div>
+        
         <div>
           <label>Password</label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
             required
           />
         </div>
