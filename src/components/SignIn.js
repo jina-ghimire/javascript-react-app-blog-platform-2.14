@@ -1,44 +1,61 @@
-import React from "react";
-import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 import '../styles/SignIn.css';
 
 const SignIn = ({ setUser }) => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const onSubmit = (data) => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     const users = JSON.parse(localStorage.getItem("users")) || [];
-    const user = users.find((user) => user.email === data.email && user.password === data.password);
-
+    const user = users.find((u) => u.email === email && u.password === password);
     if (user) {
-      localStorage.setItem("user", JSON.stringify(user));
       setUser(user);
-      navigate("/");
+      localStorage.setItem("user", JSON.stringify(user));
+      navigate("/posts");
     } else {
-      alert("Invalid credentials.");
+      alert("Invalid email or password");
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <h1>Sign In</h1>
-      <div>
-        <label>Email</label>
-        <input {...register("email", { required: true, pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ })} />
-        {errors.email && <p>Invalid email address.</p>}
-      </div>
-      <div>
-        <label>Password</label>
-        <input type="password" {...register("password", { required: true })} />
-        {errors.password && <p>Password is required.</p>}
-      </div>
-      <button type="submit">Sign In</button>
-    </form>
+    <div className="form-container">
+      <form onSubmit={handleSubmit}>
+        <h1>Sign In</h1>
+        <div>
+          <label>Email address</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+        <div>
+          <label>Password</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+        <button type="submit" className="primary">
+          Login
+        </button>
+        <p>
+          Don't have an account?{" "}
+          <span
+            className="link"
+            onClick={() => navigate("/sign-up")}
+          >
+            Sign Up
+          </span>
+        </p>
+      </form>
+    </div>
   );
 };
 

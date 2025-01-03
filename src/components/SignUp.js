@@ -1,60 +1,86 @@
-import React from "react";
-import { useForm } from "react-hook-form";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import '../styles/SignUp.css';
+import '../styles/SignIn.css';
+
 
 const SignUp = () => {
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm();
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [repeatPassword, setRepeatPassword] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const onSubmit = (data) => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (password !== repeatPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
     const users = JSON.parse(localStorage.getItem("users")) || [];
-    users.push(data);
+    const newUser = { username, email, password };
+    users.push(newUser);
     localStorage.setItem("users", JSON.stringify(users));
+    alert("Account created successfully!");
     navigate("/sign-in");
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <h1>Sign Up</h1>
-      <div>
-        <label>Username</label>
-        <input {...register("username", { required: true, minLength: 3, maxLength: 20 })} />
-        {errors.username && <p>Username must be 3-20 characters.</p>}
-      </div>
-      <div>
-        <label>Email</label>
-        <input {...register("email", { required: true, pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ })} />
-        {errors.email && <p>Invalid email address.</p>}
-      </div>
-      <div>
-        <label>Password</label>
-        <input type="password" {...register("password", { required: true, minLength: 6, maxLength: 40 })} />
-        {errors.password && <p>Password must be 6-40 characters.</p>}
-      </div>
-      <div>
-        <label>Repeat Password</label>
-        <input type="password" {...register("repeatPassword", { validate: (value) => value === watch("password") })} />
-        {errors.repeatPassword && <p>Passwords must match.</p>}
-      </div>
-      <div>
-        <label>Avatar URL</label>
-        <input {...register("avatar", { required: true, pattern: /(https?:\/\/.*\.(?:png|jpg|jpeg))/i })} />
-        {errors.avatar && <p>Invalid image URL.</p>}
-      </div>
-      <div>
-        <label>
-          <input type="checkbox" {...register("consent", { required: true })} /> I agree to the terms
-        </label>
-        {errors.consent && <p>You must agree to the terms.</p>}
-      </div>
-      <button type="submit">Sign Up</button>
-    </form>
+    <div className="form-container">
+      <form onSubmit={handleSubmit}>
+        <h1>Create New Account</h1>
+        {error && <p className="error">{error}</p>}
+        <div>
+          <label>Username</label>
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
+        </div>
+        <div>
+          <label>Email address</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+        <div>
+          <label>Password</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+        <div>
+          <label>Repeat Password</label>
+          <input
+            type="password"
+            value={repeatPassword}
+            onChange={(e) => setRepeatPassword(e.target.value)}
+            required
+          />
+        </div>
+        <button type="submit" className="primary">
+          Create
+        </button>
+        <p>
+          Already have an account?{" "}
+          <span
+            className="link"
+            onClick={() => navigate("/sign-in")}
+          >
+            Sign In
+          </span>
+        </p>
+      </form>
+    </div>
   );
 };
 
